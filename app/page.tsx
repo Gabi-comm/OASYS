@@ -19,6 +19,7 @@ export default function HomePage() {
           <Link href="/upload-media" className="btn-blue bg-zinc-700 hover:bg-zinc-600 text-xl">
             Scan
           </Link>
+          {/*comment here*/}
         </div>
       </div>
     </main>
