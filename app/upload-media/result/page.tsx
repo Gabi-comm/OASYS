@@ -3,12 +3,37 @@ import Link from 'next/link';
 export default function UploadMediaResult() {
   return (
     <div className="pt-32 px-10 min-h-screen bg-dark-bg">
-      <div className="bg-card-bg rounded-oasys p-12 border border-white/5 shadow-2xl">
+      <div className="bg-card-bg rounded-oasys p-12 border border-white/5 shadow-2xl relative">
         
         {/* Header Section */}
-        <div className="mb-10">
-          <p className="text-blue-500 font-bold mb-1 uppercase tracking-widest text-sm">Scan Analysis</p>
-          <h1 className="text-6xl font-black text-white">Media Analysis Result</h1>
+        <div className="flex justify-between items-start mb-10">
+          <div>
+            <p className="text-blue-500 font-bold mb-1 uppercase tracking-widest text-sm">Analyze Results</p>
+            <h1 className="text-6xl font-black text-white">Road Damage Report</h1>
+          </div>
+
+          {/* Back Button Icon */}
+          <Link 
+            href="/upload-media" 
+            className="p-2 rounded-full hover:bg-white/10 transition-all text-white group"
+            title="Back to Upload"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="32" 
+              height="32" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className="group-hover:-translate-x-1 transition-transform"
+            >
+              <path d="M19 12H5"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
@@ -16,7 +41,6 @@ export default function UploadMediaResult() {
           {/* Detected Image/Video Card */}
           <div className="bg-[#D9D9D9] rounded-[30px] p-6 text-black flex flex-col">
             <div className="bg-zinc-800 rounded-2xl w-full h-64 mb-6 flex items-center justify-center overflow-hidden">
-               {/* This would be the image the user uploaded */}
                <p className="text-white/50 italic text-sm text-center px-4">Detected Damage Preview</p>
             </div>
             <h2 className="text-2xl font-black mb-2">Road_Scan_001.mp4</h2>
@@ -56,12 +80,10 @@ export default function UploadMediaResult() {
             <div className="bg-[#D9D9D9] rounded-[30px] p-6 text-black flex flex-col items-center flex-grow">
               <h2 className="text-2xl font-black mb-6 self-start">Severity Level</h2>
               
-              {/* Vertical Severity Bar  */}
               <div className="w-28 bg-black rounded-2xl p-2 border-[6px] border-zinc-400">
                 <div className="flex flex-col gap-1 text-[9px] text-white font-bold text-center">
                   <div className="bg-red-600 h-12 flex items-center justify-center rounded-t-sm">CRITICAL</div>
                   <div className="bg-orange-500 h-12 flex items-center justify-center">SEVERE</div>
-                  {/* Highlighted Level */}
                   <div className="bg-yellow-400 h-12 flex items-center justify-center text-black border-4 border-white scale-110 z-10 shadow-lg">MODERATE</div>
                   <div className="bg-green-500 h-12 flex items-center justify-center rounded-b-sm">MINOR</div>
                 </div>
@@ -69,10 +91,9 @@ export default function UploadMediaResult() {
               <p className="mt-6 font-black text-center text-sm">Status: Action Required</p>
             </div>
 
-            {/* Navigation back home */}
+            {/* Submit Button */}
             <Link href="/" className="btn-blue w-full flex items-center justify-between px-8 py-4">
-              <span className="uppercase tracking-widest">Back to Home </span>
-              <span className="w-6 h-6 bg-white rounded-full" />
+              <span className="uppercase tracking-widest">Submit Report </span>
             </Link>
           </div>
 

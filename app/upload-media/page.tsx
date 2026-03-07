@@ -3,66 +3,79 @@ import Link from 'next/link';
 export default function UploadMediaPage() {
   return (
     <div className="pt-32 px-10 min-h-screen">
-      {/* Main Container */}
-      <div className="bg-dark-card p-12 shadow-2xl min-h-175 flex flex-col relative overflow-hidden">
+      {/* Main Container Card */}
+      <div className="bg-dark-card p-12 shadow-2xl min-h-150 flex flex-col justify-between">
         
         {/* Header Section */}
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <p className="text-oasysBlue font-bold text-sm uppercase tracking-[0.2em] mb-2">
-              Scan Road Condition
-            </p>
+        <div className="flex justify-between items-start">
+          <div className="max-w-xl">
+            <p className="text-oasys-blue font-bold mb-1">Upload Media Here</p>
             <h1 className="text-7xl font-black text-white leading-tight">
-              Upload <br /> Media
+              Upload Road Media
             </h1>
           </div>
-          
+
+          {/* Right-side Action/Info Area */}
           <div className="text-right flex flex-col items-end">
-            <p className="text-oasysBlue font-bold text-sm mb-4">
-              AI-Powered Detection System
+            {/* Back Button Icon */}
+            <Link
+              href="/"
+              className="mb-4 p-2 rounded-full hover:bg-white/10 transition-all text-white group"
+              title="Back to Home"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="group-hover:-translate-x-1 transition-transform"
+              >
+                <path d="M19 12H5" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+            </Link>
+
+            <p className="text-oasys-blue font-bold text-sm mb-1 uppercase tracking-wider">
+              Supported formats: JPG, PNG, MP4.
             </p>
-            <div className="flex items-center gap-4">
+            <p className="text-gray-400 text-sm mb-4 max-w-xs">
+              Our AI will detect crack type and severity level automatically.
+            </p>
+
+            <div className="flex items-center justify-end gap-4">
               <span className="text-gray-400 italic text-sm">
-                Get instant severity feedback
+                Together we can build a better future
               </span>
-              <Link href="/upload-media/result" className="btn-blue flex items-center gap-4 px-10">
-                Proceed
-                <span className="w-5 h-5 bg-white rounded-full" />
+              <Link href="/upload-media/result" className="btn-blue px-10">
+                Upload
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Centralized Upload Dropzone - Matching upload_media.png */}
-        <div className="grow flex items-center justify-center mt-4">
-          <div className="w-full h-full min-h-112.5 bg-[#D9D9D9] border-4 border-dashed border-oasysBlue/40 rounded-[40px] flex flex-col items-center justify-center text-black group hover:border-oasysBlue transition-all cursor-pointer">
+        {/* Centralized Upload Dropzone */}
+        <div className="grow flex items-center justify-center mt-10">
+          <div className="w-full h-full min-h-[450px] bg-[#D9D9D9] border-4 border-dashed border-oasys-blue/40 rounded-[40px] flex flex-col items-center justify-center text-black group hover:border-oasys-blue transition-all cursor-pointer">
+            
             {/* Plus Icon Circle */}
-            <div className="w-24 h-24 bg-oasysBlue rounded-full mb-8 flex items-center justify-center text-white text-5xl font-light shadow-lg group-hover:scale-110 transition-transform">
+            <div className="w-24 h-24 bg-oasys-blue rounded-full mb-8 flex items-center justify-center text-white text-5xl font-light shadow-lg group-hover:scale-110 transition-transform">
               +
             </div>
-            
+
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">
               Drag or Upload Media Here
             </h2>
             <p className="text-gray-600 font-bold text-lg">
               Supports MP4, JPG, and PNG formats
             </p>
-            
-            {/* Visual Decoration / Instructions */}
-            <div className="mt-12 flex gap-8 opacity-40">
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 border-2 border-black rounded-lg mb-2" />
-                <span className="text-[10px] font-bold">IMAGE</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 border-2 border-black rounded-lg mb-2 relative">
-                   <div className="absolute inset-2 bg-black rounded-sm" />
-                </div>
-                <span className="text-[10px] font-bold">VIDEO</span>
-              </div>
-            </div>
           </div>
         </div>
+
       </div>
     </div>
   );

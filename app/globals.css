@@ -21,10 +21,11 @@ nav {
 
 /* Define your design variables from the Figma designs here */
 @theme {
-  --color-oasys-blue: #3b82f6; /* */
-  --color-dark-bg: #1a1a1a;    /* */
-  --color-card-bg: #262626;    /* */
-  --radius-oasys: 40px;        /* */
+  --color-oasys-blue: #3b82f6;
+  --color-dark-bg: #1a1a1a;   
+  --color-card-bg: #262626;   
+  --radius-oasys: 40px;        
+  --spacing-150: 600px;
 }
 
 /* Base styles using standard CSS (avoiding @apply here prevents the error) */

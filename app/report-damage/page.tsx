@@ -10,17 +10,43 @@ export default function ReportDamagePage() {
         <div className="flex justify-between items-start mb-8">
           <div>
             <p className="text-blue-500 font-bold text-sm uppercase tracking-wider mb-1">
-              Submit Report Here
+              Pin Area Here
             </p>
             <h1 className="text-5xl font-extrabold text-white">
               Report Road <br /> Damage
             </h1>
           </div>
           
-          {/* Proceed to Upload Media */}
-          <Link href="/report-damage/upload" className="btn-blue">
-            Submit Report
-          </Link>
+          {/* Right Side Actions */}
+          <div className="flex flex-col items-end gap-4">
+            {/* Back Button Icon */}
+            <Link 
+              href="/" 
+              className="p-2 rounded-full hover:bg-white/10 transition-all text-white group"
+              title="Back to Home"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="32" 
+                height="32" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                className="group-hover:-translate-x-1 transition-transform"
+              >
+                <path d="M19 12H5"/>
+                <polyline points="12 19 5 12 12 5"/>
+              </svg>
+            </Link>
+
+            {/* Proceed to Upload Media */}
+            <Link href="/report-damage/upload" className="btn-blue">
+              Pin Area
+            </Link>
+          </div>
         </div>
 
         {/* Location Display */}
@@ -35,7 +61,6 @@ export default function ReportDamagePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Map View */}
           <div className="lg:col-span-2 bg-gray-300 rounded-2xl h-[450px] relative overflow-hidden">
-             {/* You would integrate a map library like Leaflet or Google Maps here */}
              <div className="absolute inset-0 bg-[url('/homepage.jpg')] bg-cover bg-center opacity-80" />
              <div className="absolute inset-0 flex items-center justify-center">
                 {/* Red Pin Placeholder */}
