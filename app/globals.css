@@ -1,14 +1,31 @@
 @import "tailwindcss";
 
-/* Define your design variables from the Figma designs here */
-@theme {
-  --color-oasys-blue: #3b82f6; /* */
-  --color-dark-bg: #1a1a1a;    /* */
-  --color-card-bg: #262626;    /* */
-  --radius-oasys: 40px;        /* */
+@layer components {
+  .nav-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
-/* Base styles using standard CSS (avoiding @apply here prevents the error) */
+nav {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+@theme {
+  --color-oasys-blue: #3b82f6;
+  --color-dark-bg: #1a1a1a;   
+  --color-card-bg: #262626;   
+  --radius-oasys: 40px;        
+  --spacing-150: 600px;
+}
+
 :root {
   background-color: var(--color-dark-bg);
   color: white;

@@ -61,7 +61,7 @@ export default function ReportDamagePage() {
         <div className="flex justify-between items-start mb-8">
           <div>
             <p className="text-blue-500 font-bold text-sm uppercase tracking-wider mb-1">
-              Submit Report Here
+              Pin Area Here
             </p>
             <h1 className="text-5xl font-extrabold text-white">
               Report Road <br /> Damage
