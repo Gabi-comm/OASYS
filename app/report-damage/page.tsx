@@ -54,14 +54,9 @@ export default function ReportDamagePage() {
   const isReadyToSubmit = hasPinned && mediaPreview !== null;
 
   return (
-<<<<<<< Updated upstream
-    <div className="pt-32 px-10 min-h-screen bg-[#1a1a1a]">
-      <div className="bg-[#262626] rounded-[40px] p-12 border border-white/5 shadow-2xl">
-=======
     <div className="pt-32 px-10 min-h-screen bg-dark-bg">
       {/* Container with rounded corners from Figma */}
       <div className="bg-card-bg rounded-oasys p-12 border border-white/5 shadow-2xl">
->>>>>>> Stashed changes
         
         {/* Header Section */}
         <div className="flex justify-between items-start mb-8">
