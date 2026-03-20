@@ -1,6 +1,21 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 
 export default function UploadMediaPage() {
+  // State to hold the uploaded image preview
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+
+  // Function to handle when a user selects an image
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setMediaPreview(previewUrl);
+    }
+  };
+
   return (
     <div className="pt-32 px-10 min-h-screen">
       {/* Main Container Card */}
@@ -11,7 +26,7 @@ export default function UploadMediaPage() {
           <div className="max-w-xl">
             <p className="text-oasys-blue font-bold mb-1">Upload Media Here</p>
             <h1 className="text-7xl font-black text-white leading-tight">
-              Upload Road Media
+              Upload Road Image
             </h1>
           </div>
 
@@ -40,8 +55,9 @@ export default function UploadMediaPage() {
               </svg>
             </Link>
 
+            {/* UPDATED: Removed MP4 */}
             <p className="text-oasys-blue font-bold text-sm mb-1 uppercase tracking-wider">
-              Supported formats: JPG, PNG, MP4.
+              Supported formats: JPG, PNG.
             </p>
             <p className="text-gray-400 text-sm mb-4 max-w-xs">
               Our AI will detect crack type and severity level automatically.
@@ -60,20 +76,43 @@ export default function UploadMediaPage() {
 
         {/* Centralized Upload Dropzone */}
         <div className="grow flex items-center justify-center mt-10">
-          <div className="w-full h-full min-h-[450px] bg-[#D9D9D9] border-4 border-dashed border-oasys-blue/40 rounded-[40px] flex flex-col items-center justify-center text-black group hover:border-oasys-blue transition-all cursor-pointer">
+          <label className="w-full h-full min-h-[450px] bg-[#D9D9D9]
+                            border-4 border-dashed border-oasys-blue/40 rounded-[40px] 
+                            flex flex-col items-center justify-center text-black group 
+                            hover:border-oasys-blue transition-all cursor-pointer 
+                            relative overflow-hidden">
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handleFileUpload} 
+            />
             
-            {/* Plus Icon Circle */}
-            <div className="w-24 h-24 bg-oasys-blue rounded-full mb-8 flex items-center justify-center text-white text-5xl font-light shadow-lg group-hover:scale-110 transition-transform">
-              +
-            </div>
+            {/* Conditionally render the image preview OR the upload instructions */}
+            {mediaPreview ? (
+              <img 
+                src={mediaPreview} 
+                alt="Uploaded preview" 
+                className="w-full h-full object-contain absolute inset-0 bg-zinc-800/50" 
+              />
+            ) : (
+              <>
+                {/* Plus Icon Circle */}
+                <div className="w-24 h-24 bg-oasys-blue rounded-full mb-8 flex items-center 
+                                justify-center text-white text-5xl font-light shadow-lg 
+                                group-hover:scale-110 transition-transform">
+                  +
+                </div>
 
-            <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">
-              Drag or Upload Media Here
-            </h2>
-            <p className="text-gray-600 font-bold text-lg">
-              Supports MP4, JPG, and PNG formats
-            </p>
-          </div>
+                <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">
+                  Drag or Upload Image Here
+                </h2>
+                <p className="text-gray-600 font-bold text-lg">
+                  Supports JPG and PNG formats
+                </p>
+              </>
+            )}
+          </label>
         </div>
 
       </div>
