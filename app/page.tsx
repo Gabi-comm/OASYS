@@ -40,11 +40,6 @@ export default function HomePage() {
         />
       </div>
       
-      {/* To Enzo Chan:
-      
-          Center OASYS Logo
-          Bigger everything sa gitna
-          Add either a Header or rounded shapes sa Top Right */}
       <div className="absolute inset-0 z-0 bg-black/50 pointer-events-none" />
       <div className="z-10 text-white">
         <h1 className="text-9xl font-black mb-4 text-center">OASYS</h1>

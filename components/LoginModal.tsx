@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import { supabase } from '@/utils/supabase';
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   // UI State
@@ -17,43 +18,53 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
   // ======================
 
   const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMsg("");
+      e.preventDefault();
+      setIsLoading(true);
+      setErrorMsg("");
 
-    try {
-      console.log("Attempting Sign Up with:", { email, username, password });
-      
-      // Simulating a network request delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      alert("Signup simulated successfully! Ready for DB connection.");
-      
-    } catch (error) {
-      setErrorMsg("Failed to create account. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username: username,
+            }
+          }
+        });
+
+        if (error) throw error;
+        
+        alert("Success!");
+        toggleMode(true);
+        
+      } catch (error: any) {
+        setErrorMsg(error.message || "Failed to create account.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMsg("");
+        e.preventDefault();
+        setIsLoading(true);
+        setErrorMsg("");
 
-    try {
-      console.log("Attempting Log In with:", { email, password });
+        try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                  email,
+                  password,
+                });
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert("Login simulated successfully! Ready for DB connection.");
-      onClose();
-      
-    } catch (error) {
-      setErrorMsg("Invalid email or password.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+                if (error) throw error;
+                onClose();
+          
+        } catch (error: any) {
+          setErrorMsg("Invalid email or password.");
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
   const handleForgotPassword = async () => {
     if (!email) {
@@ -65,13 +76,13 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
     setErrorMsg("");
     
     try {
-      console.log("Requesting password reset for:", email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
       
-      await new Promise(resolve => setTimeout(resolve, 800));
-      alert(`Password reset link simulated! An email would be sent to ${email}.`);
+      alert(`Password reset link sent to ${email}!`);
       
-    } catch (error) {
-      setErrorMsg("Failed to send reset link.");
+    } catch (error: any) {
+      setErrorMsg(error.message || "Failed to send reset link.");
     } finally {
       setIsLoading(false);
     }
