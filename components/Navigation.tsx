@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import LoginModal from './LoginModal';
 import { supabase } from '@/utils/supabase';
 
@@ -8,7 +9,7 @@ export default function Navigation() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   
-  // 2. Add a state to store the logged-in user
+  // To store the logged-in user
   const [user, setUser] = useState<any>(null);
 
   // Navbar scroll logic
@@ -27,7 +28,7 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', controlNavbar);
   }, [lastScrollY]);
 
-  // 3. Supabase Auth Listener
+  // Supabase Auth Listener
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -44,7 +45,7 @@ export default function Navigation() {
     };
   }, []);
 
-  // 4. Handle Log Out
+  // Log Out
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
@@ -60,11 +61,11 @@ export default function Navigation() {
 
         {/* Links */}
         <div className="flex items-center gap-8">
-          <button className="text-white hover:text-blue-400 font-bold transition-colors">Home</button>
-          <button className="text-white hover:text-blue-400 font-bold transition-colors">Scan</button>
-          <button className="text-white hover:text-blue-400 font-bold transition-colors">About Us</button>
+          <Link href="/" className="text-white hover:text-blue-400 font-bold transition-colors">Home</Link>
+          <Link href="/upload-media" className="text-white hover:text-blue-400 font-bold transition-colors">Scan</Link>
+          <Link href="/about" className="text-white hover:text-blue-400 font-bold transition-colors">About Us</Link>
           
-          {/* 5. Conditional Rendering: Show Profile/Logout if logged in, else show Sign-In */}
+          {/* Show Profile/Logout if logged in, else show Sign-In */}
           {user ? (
             <div className="flex items-center gap-4">
               {/* Extract the username we saved earlier! */}

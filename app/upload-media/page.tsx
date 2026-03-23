@@ -4,13 +4,16 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function UploadMediaPage() {
-  // State to hold the uploaded image preview
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
 
-  // Function to handle when a user selects an image
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload a valid image file (JPG or PNG).");
+        return;
+      }
+      
       const previewUrl = URL.createObjectURL(file);
       setMediaPreview(previewUrl);
     }
@@ -55,7 +58,6 @@ export default function UploadMediaPage() {
               </svg>
             </Link>
 
-            {/* UPDATED: Removed MP4 */}
             <p className="text-oasys-blue font-bold text-sm mb-1 uppercase tracking-wider">
               Supported formats: JPG, PNG.
             </p>
@@ -67,9 +69,21 @@ export default function UploadMediaPage() {
               <span className="text-gray-400 italic text-sm">
                 Together we can build a better future
               </span>
-              <Link href="/upload-media/result" className="btn-blue px-10">
-                Upload
-              </Link>
+              
+              {/* NEW: Conditionally render a disabled button OR the active link */}
+              {mediaPreview ? (
+                <Link href="/upload-media/result" className="btn-blue px-10">
+                  Upload
+                </Link>
+              ) : (
+                <button 
+                  disabled 
+                  className="btn-blue px-10 opacity-50 cursor-not-allowed"
+                >
+                  Upload
+                </button>
+              )}
+              
             </div>
           </div>
         </div>
@@ -83,7 +97,8 @@ export default function UploadMediaPage() {
                             relative overflow-hidden">
             <input 
               type="file" 
-              accept="image/*" 
+              // NEW: Strictly tell the browser file picker to only allow images
+              accept="image/png, image/jpeg, image/jpg" 
               className="hidden" 
               onChange={handleFileUpload} 
             />
