@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+// 1. Import useRouter
+import { useRouter } from 'next/navigation'; 
 import LoginModal from './LoginModal';
 import { supabase } from '@/utils/supabase';
 
@@ -9,8 +11,10 @@ export default function Navigation() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   
-  // To store the logged-in user
   const [user, setUser] = useState<any>(null);
+  
+  // 2. Initialize the router
+  const router = useRouter(); 
 
   // Navbar scroll logic
   useEffect(() => {
@@ -45,9 +49,10 @@ export default function Navigation() {
     };
   }, []);
 
-  // Log Out
+  // 3. Update Handle Log Out to redirect!
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    router.push('/'); // Teleport them back to Home!
   };
 
   return (
@@ -65,12 +70,16 @@ export default function Navigation() {
           <Link href="/upload-media" className="text-white hover:text-blue-400 font-bold transition-colors">Scan</Link>
           <Link href="/about" className="text-white hover:text-blue-400 font-bold transition-colors">About Us</Link>
           
-          {/* Show Profile/Logout if logged in, else show Sign-In */}
+          {/* This checks if the user is 'admin' */}
+          {user?.user_metadata?.role === 'admin' && (
+            <Link href="/admin/dashboard" className="text-white hover:text-blue-400 font-bold transition-colors">Admin Dashboard</Link>
+          )}
+          
+          {/* Show Profile/Logout */}
           {user ? (
-            <div className="flex items-center gap-4">
-              {/* Extract the username we saved earlier! */}
+            <div className="flex items-center gap-4 border-l border-white/20 pl-8 ml-2">
               <span className="text-white font-bold">
-                Hi, {user.user_metadata?.username || "User"}
+                Hi, {user.user_metadata?.username || "Admin"}
               </span>
               <button 
                 onClick={handleLogout}
@@ -82,7 +91,7 @@ export default function Navigation() {
           ) : (
             <button 
               onClick={() => setShowLogin(true)}
-              className="flex items-center gap-3 bg-[#D9D9D9] text-black px-5 py-2 rounded-full font-bold hover:bg-white transition-all"
+              className="flex items-center gap-3 bg-[#D9D9D9] text-black px-5 py-2 rounded-full font-bold hover:bg-white transition-all ml-4"
             >
               Sign-In
               <span className="w-4 h-4 bg-blue-500 rounded-full" />
