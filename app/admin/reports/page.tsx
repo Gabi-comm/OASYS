@@ -204,7 +204,7 @@ export default function AdminReports() {
             <h1 className="text-4xl md:text-5xl font-black mb-2">Reports</h1>
             <p className="text-[#3b82f6] text-sm font-bold uppercase tracking-widest">Master Database</p>
           </div>
-          <Link href="/admin" className="text-zinc-400 hover:text-white font-bold text-sm transition-colors">
+          <Link href="/admin/dashboard" className="text-zinc-400 hover:text-white font-bold text-sm transition-colors">
             &larr; Back to Dashboard
           </Link>
         </div>
