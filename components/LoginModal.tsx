@@ -48,8 +48,10 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           }
         }
         
-        // STEP 3: Sign them out immediately so they don't auto-login 
-        // (This happens because email confirmations are currently turned off)
+        // STEP 3: Destroy the auto-login session
+        // We add a tiny 500ms delay to let Supabase finish writing the session 
+        // to the browser before we immediately delete it.
+        await new Promise(resolve => setTimeout(resolve, 500));
         await supabase.auth.signOut();
         
         alert("Account created! Please log in.");
