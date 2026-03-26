@@ -18,7 +18,7 @@ export default function AdminLayout({
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
 
-      // 2. Check if they exist AND if their hidden metadata role is 'admin'
+      // 2. Check if they exist AND if their hidden  role is 'admin'
       if (user && user.user_metadata?.role === 'admin') {
         setIsAuthorized(true); // Let them in!
       } else {
