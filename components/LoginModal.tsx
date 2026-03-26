@@ -23,20 +23,37 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       setErrorMsg("");
 
       try {
+        // STEP 1: Create the user in Supabase Authentication
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: {
-              username: username,
-            }
-          }
         });
 
         if (error) throw error;
+
+        // STEP 2: Insert their details into your custom UserDetail database table
+        if (data.user) {
+          const { error: dbError } = await supabase
+            .from('UserDetail')
+            .insert({
+              userloginuuid: data.user.id,
+              username: username,
+              email: email,
+              role: 'user'
+            });
+
+          if (dbError) {
+            console.error("Database Insert Error:", dbError);
+            throw new Error("Auth succeeded, but failed to save profile to database.");
+          }
+        }
         
-        alert("Success!");
-        toggleMode(true);
+        // STEP 3: Sign them out immediately so they don't auto-login 
+        // (This happens because email confirmations are currently turned off)
+        await supabase.auth.signOut();
+        
+        alert("Account created! Please log in.");
+        toggleMode(true); // Switch to the login panel
         
       } catch (error: any) {
         setErrorMsg(error.message || "Failed to create account.");
@@ -103,18 +120,18 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       {/* Main Modal Container */}
       <div 
         className="relative w-full max-w-[800px] h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex"
-        onClick={(e) => e.stopPropagation()} // Prevent clicking inside from closing modal
+        onClick={(e) => e.stopPropagation()} 
       >
         
         {/* ==========================================
             LEFT SIDE: SIGN UP FORM
         ========================================== */}
         <div className="absolute top-0 left-0 w-1/2 h-full p-12 flex flex-col justify-center bg-white z-0">
-          <h2 className="text-4xl font-black mb-6 text-center text-[#3b82f6]">Sign Up</h2>
+          {/* CHANGED TEXT COLOR TO #262626 HERE */}
+          <h2 className="text-4xl font-black mb-6 text-center text-[#262626]">Sign Up</h2>
           
           {errorMsg && !isLogin && <p className="text-red-500 text-xs font-bold text-center mb-2">{errorMsg}</p>}
 
-          {/* Changed to a <form> tag to handle submission properly */}
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 px-1 mb-1">Email</label>
@@ -165,7 +182,8 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             RIGHT SIDE: LOG IN FORM
         ========================================== */}
         <div className="absolute top-0 right-0 w-1/2 h-full p-12 flex flex-col justify-center bg-white z-0">
-          <h2 className="text-4xl font-black mb-6 text-center text-[#3b82f6]">Log In</h2>
+          {/* CHANGED TEXT COLOR TO #262626 HERE */}
+          <h2 className="text-4xl font-black mb-6 text-center text-[#262626]">Log In</h2>
           
           {errorMsg && isLogin && <p className="text-red-500 text-xs font-bold text-center mb-2">{errorMsg}</p>}
 
@@ -193,7 +211,6 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
               />
             </div>
 
-            {/* Small Forgot Password */}
             <div className="text-right mt-2">
               <button 
                 type="button"

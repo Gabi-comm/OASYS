@@ -10,7 +10,9 @@ export default function Navigation() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   
-  const [user, setUser] = useState<any>(null);
+  // Split user state into Auth (ID/Email) and DB Profile (Username/Role)
+  const [authUser, setAuthUser] = useState<any>(null);
+  const [dbProfile, setDbProfile] = useState<any>(null);
   
   const router = useRouter(); 
 
@@ -30,20 +32,45 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', controlNavbar);
   }, [lastScrollY]);
 
+  // Fetch DB Profile Helper
+  const fetchUserProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('UserDetail')
+      .select('username, role')
+      .eq('userloginuuid', userId)
+      .single();
+      
+    if (!error && data) {
+      setDbProfile(data);
+      return data; 
+    }
+    return null;
+  };
+
   // Supabase Auth Listener
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      setAuthUser(session?.user || null);
+      if (session?.user) {
+        await fetchUserProfile(session.user.id);
+      }
     };
     checkUser();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setAuthUser(session?.user || null);
       
-      // 1. Instantly redirect admins when they log in
-      if (event === 'SIGNED_IN' && session?.user?.user_metadata?.role === 'admin') {
-        router.push('/admin/dashboard');
+      if (session?.user) {
+        // Fetch their profile from the DB
+        const profile = await fetchUserProfile(session.user.id);
+        
+        // Instantly redirect admins when they log in, using the DB role
+        if (event === 'SIGNED_IN' && profile?.role === 'admin') {
+          router.push('/admin/dashboard');
+        }
+      } else {
+        setDbProfile(null);
       }
     });
 
@@ -54,6 +81,7 @@ export default function Navigation() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setDbProfile(null);
     router.push('/'); 
   };
 
@@ -63,38 +91,33 @@ export default function Navigation() {
         className={`fixed top-0 w-full z-50 flex justify-between items-center p-8 transition-all ${ isVisible ? 'translate-y-0' : '-translate-y-full' }`}
         style={{ backgroundColor: isVisible && lastScrollY > 50 ? 'rgba(26, 26, 26, 0.9)' : 'transparent' }}
       >
-        {/* 2. Left Side: Replaced Logo with User Greeting */}
+        {/* Left Side: User Greeting */}
         <div className="flex items-center">
-          {user ? (
-            <span className="text-white font-black text-xl tracking-wide">
-              Hi, <span className="text-blue-400">{user.user_metadata?.username || "Admin"}</span>
+          {authUser && dbProfile ? (
+            // REMOVED text-xl, font-black, tracking-wide. ADDED font-bold to match buttons.
+            <span className="text-white font-bold">
+              Hi, <span className="text-white">{dbProfile.username || "User"}</span>
             </span>
           ) : (
-            // Just an empty placeholder so the flexbox stays balanced when logged out
             <div className="w-12 h-12" /> 
           )}
         </div>
 
-        {/* 3. Right Side: Links and Actions */}
+        {/* Right Side: Links and Actions */}
         <div className="flex items-center gap-8">
           
-          {/* Dynamic Home Link: Goes to admin dashboard if admin, otherwise normal home */}
           <Link 
-            href={user?.user_metadata?.role === 'admin' ? '/admin/dashboard' : '/'} 
+            href={dbProfile?.role === 'admin' ? '/admin/dashboard' : '/'} 
             className="text-white hover:text-blue-400 font-bold transition-colors"
           >
             Home
           </Link>
 
           <Link href="/upload-media" className="text-white hover:text-blue-400 font-bold transition-colors">Scan</Link>
-          
-          {/* 4. New Report Link */}
           <Link href="/report-damage" className="text-white hover:text-blue-400 font-bold transition-colors">Report</Link>
-          
           <Link href="/about" className="text-white hover:text-blue-400 font-bold transition-colors">About Us</Link>
           
-          {/* Show Log Out if logged in, otherwise Sign In */}
-          {user ? (
+          {authUser ? (
             <div className="border-l border-white/20 pl-8 ml-2">
               <button 
                 onClick={handleLogout}

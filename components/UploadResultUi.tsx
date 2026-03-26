@@ -3,14 +3,15 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/utils/supabase'; 
-// 1. Import your LoginModal (Adjust the path if your component is in a different folder!)
 import LoginModal from './LoginModal'; 
 
 export default function UploadResultUi({ backLinkHref }: { backLinkHref: string }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // 2. Add state to control the modal
   const [showLogin, setShowLogin] = useState(false); 
+  
+  // NEW: State to handle the loading animation during submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -29,6 +30,52 @@ export default function UploadResultUi({ backLinkHref }: { backLinkHref: string 
       authListener.subscription.unsubscribe();
     };
   }, []);
+
+  // ==========================================
+  //  NEW: DATABASE SUBMISSION LOGIC
+  // ==========================================
+  const handleSubmitReport = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      // 1. Get the current logged-in user
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
+        throw new Error("You must be logged in to submit a report.");
+      }
+
+      // Note: If you have a real file, you would first upload it to a Supabase Storage Bucket here,
+      // and get the public URL back to save into 'fileaddress'. 
+      // For now, we are simulating it with a placeholder URL based on your UI.
+      const simulatedFileUrl = "https://your-supabase-url.supabase.co/storage/v1/object/public/reports/Road_Scan_001.mp4";
+
+      // 2. Insert into the FileUpload table
+      const { error } = await supabase
+        .from('FileUpload') 
+        .insert({
+          userid: session.user.id,        // The Auth UUID
+          filename: "Road_Scan_001.mp4",  // Matching your UI
+          fileaddress: simulatedFileUrl,  // The URL of the image/video
+          address: "Caloocan, Metro Manila" // Placeholder location
+        });
+
+      if (error) {
+        console.error("Insert Error:", error);
+        throw error;
+      }
+
+      alert('Report successfully submitted to the database!');
+      
+      // Optional: Redirect them back to the dashboard or clear the form
+      // window.location.href = '/'; 
+
+    } catch (error: any) {
+      alert(error.message || "Failed to submit report. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -105,10 +152,9 @@ export default function UploadResultUi({ backLinkHref }: { backLinkHref: string 
                 
                 <div className="w-28 bg-black rounded-2xl p-2 border-[6px] border-zinc-400">
                   <div className="flex flex-col gap-1 text-[9px] text-white font-bold text-center">
-                    <div className="bg-red-600 h-12 flex items-center justify-center rounded-t-sm opacity-40">CRITICAL</div>
-                    <div className="bg-orange-500 h-12 flex items-center justify-center opacity-40">SEVERE</div>
-                    <div className="bg-yellow-400 h-12 flex items-center justify-center text-black border-4 border-white scale-110 z-10 shadow-lg">MODERATE</div>
-                    <div className="bg-green-500 h-12 flex items-center justify-center rounded-b-sm opacity-40">MINOR</div>
+                    <div className="bg-red-600 h-12 flex items-center justify-center rounded-t-sm opacity-40">HIGH</div>
+                    <div className="bg-yellow-400 h-12 flex items-center justify-center text-black border-4 border-white scale-110 z-10 shadow-lg">MEDIUM</div>
+                    <div className="bg-green-500 h-12 flex items-center justify-center rounded-b-sm opacity-40">LOW</div>
                   </div>
                 </div>
                 <p className="mt-6 font-black text-center text-sm">Status: Action Required</p>
@@ -121,13 +167,13 @@ export default function UploadResultUi({ backLinkHref }: { backLinkHref: string 
                 </div>
               ) : isSignedIn ? (
                 <button 
-                  onClick={() => alert('Proceeding to upload to database...')}
-                  className="w-full bg-[#3b82f6] text-white font-black rounded-full px-8 py-4 uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg active:scale-95"
+                  onClick={handleSubmitReport}
+                  disabled={isSubmitting}
+                  className="w-full bg-[#3b82f6] text-white font-black rounded-full px-8 py-4 uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Report
+                  {isSubmitting ? 'Submitting...' : 'Submit Report'}
                 </button>
               ) : (
-                // 3. Changed this from a Link to a button that opens the modal
                 <button 
                   onClick={() => setShowLogin(true)}
                   className="w-full bg-zinc-800 text-white font-black rounded-full px-8 py-4 uppercase tracking-widest hover:bg-black transition-all shadow-lg flex justify-center text-center border border-white/10"
@@ -142,7 +188,6 @@ export default function UploadResultUi({ backLinkHref }: { backLinkHref: string 
         </div>
       </div>
 
-      {/* 4. Render the modal if showLogin is true */}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
